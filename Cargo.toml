@@ -1,0 +1,9 @@
+[package]
+name = "prisma-query-engine-c-api"
+version = "0.1.0"
+edition = "2021"
+authors = ["Seven Du <whine.whitish.0u@icloud.com>"]
+repository = "https://github.com/prismaorm/query-engine-c-api"
+license = "MIT"
+
+[dependencies]
