@@ -8,23 +8,23 @@ type Executor = Box<dyn QueryExecutor + Send + Sync>;
 /// Holding the information to reconnect the engine if needed.
 #[derive(Debug, Clone)]
 pub struct EngineDatamodel {
-    ast: Datamodel,
-    raw: String,
+    pub ast: Datamodel,
+    pub raw: String,
 }
 
 /// Internal structure for querying and reconnecting with the engine.
 pub struct ConnectedEngine {
-  datamodel: EngineDatamodel,
-  query_schema: Arc<QuerySchema>,
-  executor: Executor,
-  datasource: String,
-  metrics: Option<MetricRegistry>,
+  pub datamodel: EngineDatamodel,
+  pub query_schema: Arc<QuerySchema>,
+  pub executor: Executor,
+  pub datasource: String,
+  pub metrics: Option<MetricRegistry>,
 }
 
 /// Everything needed to connect to the database and have the core running.
 pub struct EngineBuilder {
-  datamodel: EngineDatamodel,
-  datasource: String,
+  pub datamodel: EngineDatamodel,
+  pub datasource: String,
 }
 
 /// The state of the engine.
