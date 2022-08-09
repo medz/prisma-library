@@ -1,40 +1,48 @@
-use std::{ffi::CString, os::raw::c_char};
+use std::ffi::CString;
 
-/// Prisma query engine C API version.
-/// 
-/// - hash: The git hash of the current build.
-/// - semver: The crate package semver version.
+use libc::c_char;
+
+/// The Prisma query engine dynamid liobrary version info.
+#[repr(C)]
 pub struct Version {
-    pub hash: &'static str,
-    pub semver: &'static str,
+  /// The commit hash of https://github.com/odroe/prisma repository.
+  pub commit: *const c_char,
+
+  /// The version of the library.
+  pub version: *const c_char,
 }
 
-impl Version {
-    pub fn new() -> Self {
-        Version {
-            hash: env!("GIT_HASH"),
-            semver: env!("CARGO_PKG_VERSION"),
-        }
-    }
-}
+/// Get current version of the library.
+#[no_mangle]
+pub extern "C" fn version() -> Version {
+  // Repository commit hash.
+  let commit = env!("GIT_HASH");
+  let commit = CString::new(commit).unwrap();
 
-/// Get the Prisma query engine C API version.
-pub extern "C" fn version() -> *const c_char {
-    let version = Version::new();
-    let version = format!("{{\"hash\":\"{}\",\"semver\":\"{}\"}}", version.hash, version.semver);
-    let version = CString::new(version).unwrap();
+  // Library version.
+  let version = env!("CARGO_PKG_VERSION");
+  let version = CString::new(version).unwrap();
 
-    version.into_raw()
+  Version {
+    commit: commit.as_ptr(),
+    version: version.as_ptr(),
+  }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+  use std::ffi::CStr;
+  use super::*;
+
+  #[test]
+  fn test_version() {
+    let info = version();
     
-    #[test]
-    fn test_version() {
-        let version = Version::new();
-        assert_eq!(version.hash, env!("GIT_HASH"));
-        assert_eq!(version.semver, env!("CARGO_PKG_VERSION"));
-    }
+    let commit = env!("GIT_HASH");
+    let commit = CString::new(commit).unwrap();
+    let commit_str = unsafe {
+      CStr::from_ptr(info.commit).to_str().unwrap()
+    };
+    assert_eq!(commit_str, commit.to_str().unwrap());
+  }
 }
