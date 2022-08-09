@@ -32,12 +32,28 @@ pub extern "C" fn engine_create(
     return EngineCreateResult::Failure(string_to_c_char(err));
   }
 
+  let datasource_url = c_char_to_string(datasource);
+  let config = datamodel::parse_configuration(&datamodel).and_then(| mut config | {
+    for datasource in &mut config.subject.datasources {
+      datasource.url.value = Some(datasource_url.clone());
+      datasource.url.from_env_var = None;
+    }
+
+    Ok(config)
+  });
+  if config.is_err() {
+    let err = config.unwrap_err();
+    let err = err.errors().first().unwrap();
+    let err = string_to_c_char(&err.message());
+    return EngineCreateResult::Failure(err);
+  }
+
   let ast = ast.unwrap().subject;
   let datamodel = EngineDatamodel { ast, raw: datamodel };
 
   let builder = EngineBuilder {
     datamodel,
-    datasource: c_char_to_string(datasource),
+    config: config.unwrap(),
   };
   let builder = Inner::Builder(builder);
   let builder = RwLock::new(builder);

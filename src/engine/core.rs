@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
-use datamodel::dml::Datamodel;
-use query_core::{QueryExecutor, schema::QuerySchema, MetricRegistry};
+use datamodel::{dml::Datamodel, ValidatedConfiguration};
+use query_core::{QueryExecutor, schema::QuerySchema};
 
 type Executor = Box<dyn QueryExecutor + Send + Sync>;
 
@@ -17,14 +17,12 @@ pub struct ConnectedEngine {
   pub datamodel: EngineDatamodel,
   pub query_schema: Arc<QuerySchema>,
   pub executor: Executor,
-  pub datasource: String,
-  pub metrics: Option<MetricRegistry>,
 }
 
 /// Everything needed to connect to the database and have the core running.
 pub struct EngineBuilder {
   pub datamodel: EngineDatamodel,
-  pub datasource: String,
+  pub config: ValidatedConfiguration,
 }
 
 /// The state of the engine.
@@ -34,4 +32,14 @@ pub enum Inner {
   /// A connected engine, holding all data to disconnect and form a new
   /// connection. Allows querying when on this state.
   Connected(ConnectedEngine),
+}
+
+impl Inner {
+  // Returns a builder if the engine is not connected
+  pub fn as_builder(&self) -> Result<&EngineBuilder, &str> {
+    match self {
+      Inner::Builder(ref builder) => Ok(builder),
+      Inner::Connected(_) => Err("Engine is already connected"),
+    }
+  }
 }
