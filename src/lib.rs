@@ -1,6 +1,6 @@
 pub mod dmmf;
+pub mod engine;
 pub mod version;
-
 
 /// c_char to String
 pub fn c_char_to_string(c_char: *const libc::c_char) -> String {
@@ -14,4 +14,3 @@ pub fn string_to_c_char(string: &str) -> *const libc::c_char {
     let string = std::ffi::CString::new(string).unwrap();
     string.into_raw()
 }
-
