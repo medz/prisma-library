@@ -1,12 +1,10 @@
-use std::sync::Arc;
-
+use crate::{c_char_to_string, error::ApiError, string_to_c_char};
 use datamodel_connector::ConnectorCapabilities;
 use libc::c_char;
 use prisma_models::InternalDataModelBuilder;
 use query_core::{schema::QuerySchemaRef, schema_builder};
 use request_handlers::dmmf;
-
-use crate::{c_char_to_string, error::ApiError, string_to_c_char};
+use std::sync::Arc;
 
 type Result<T> = std::result::Result<T, ApiError>;
 

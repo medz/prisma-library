@@ -1,9 +1,7 @@
-use std::sync::{Arc, RwLock, RwLockWriteGuard};
-
+use super::core::Engine;
 use intmap::IntMap;
 use once_cell::sync::Lazy;
-
-use super::core::Engine;
+use std::sync::{Arc, RwLock, RwLockWriteGuard};
 
 // pub static mut INSTANCES: Vec<RwLock<Inner>> = Vec::<RwLock<Inner>>::new();
 

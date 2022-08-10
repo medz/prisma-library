@@ -1,6 +1,5 @@
-use std::ffi::CString;
-
 use libc::c_char;
+use std::ffi::CString;
 
 /// The Prisma query engine dynamid liobrary version info.
 #[repr(C)]

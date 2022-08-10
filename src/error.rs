@@ -1,18 +1,32 @@
+use crate::string_to_c_char;
 use datamodel_connector::Diagnostics;
 use libc::c_char;
 use query_connector::error::ConnectorError;
 use query_core::CoreError;
+use thiserror::Error;
 
-use crate::string_to_c_char;
-
+#[derive(Debug, Error)]
 #[repr(C)]
 pub enum ApiError {
+    #[error("{:?}", _0)]
     Conversion(*const c_char, *const c_char),
+
+    #[error("{:?}", _0)]
     Configuration(*const c_char),
+
+    #[error("{:?}", _0)]
     Core(*const c_char),
+
+    #[error("{:?}", _0)]
     Connector(*const c_char),
+
+    #[error("Can't modify an already connected engine.")]
     AlreadyConnected,
+
+    #[error("Engine is not yet connected.")]
     NotConnected,
+
+    #[error("{:?}", _0)]
     JsonDecode(*const c_char),
 }
 

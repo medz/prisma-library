@@ -2374,6 +2374,7 @@ dependencies = [
  "request-handlers",
  "serde",
  "serde_json",
+ "sql-query-connector",
  "thiserror",
  "tokio",
  "url",
