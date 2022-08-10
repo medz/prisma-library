@@ -9,7 +9,7 @@ use std::sync::Arc;
 
 impl Engine {
     /// Connect to the database, allow queries to be run.
-    pub async fn connect(&self) -> Result<()> {
+    async fn connect(&self) -> Result<()> {
         async_panic_to_error(async {
             let mut inner = self.inner.write().await;
             let builder = inner.as_builder()?;

@@ -9,7 +9,7 @@ use tokio::sync::RwLock;
 
 impl Engine {
     /// Creates a new engine.
-    pub fn new(datamodel: String, datasource_url: String) -> Result<Self> {
+    fn new(datamodel: String, datasource_url: String) -> Result<Self> {
         let config = datamodel::parse_configuration(&datamodel)
             .and_then(|mut config| {
                 for datasource in &mut config.subject.datasources {

@@ -6,7 +6,7 @@ use crate::{error::ApiError, string_to_c_char};
 
 impl Engine {
     /// Disconnect and drop the core. Can be reconnected later with `#connect`.
-    pub async fn disconnect(&self) -> Result<()> {
+    async fn disconnect(&self) -> Result<()> {
         async_panic_to_error(async {
             let mut inner = self.inner.write().await;
             let engine = inner.as_engine()?;
