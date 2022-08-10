@@ -2,14 +2,17 @@ use crate::{error::ApiError, string_to_c_char};
 
 use super::instance;
 
-/// Engine connect.
 #[no_mangle]
-pub extern "C" fn connect(id: i64, error: extern "C" fn(error: ApiError), done: extern "C" fn()) {
+pub extern "C" fn disconnect(
+    id: i64,
+    error: extern "C" fn(error: ApiError),
+    done: extern "C" fn(),
+) {
     let lock = instance::lock();
     let engine = lock.get(id.unsigned_abs());
 
     if let Some(engine) = engine {
-        let result = futures::executor::block_on(engine.connect());
+        let result = futures::executor::block_on(engine.disconnect());
         if result.is_ok() {
             done();
         } else {

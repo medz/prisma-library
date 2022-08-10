@@ -17,7 +17,7 @@ pub enum EngineCreateResult {
 
 /// Create a query engine.
 #[no_mangle]
-pub extern "C" fn engine_create(
+pub extern "C" fn create_engine(
     datamodel: *const c_char,
     datasource: *const c_char,
 ) -> EngineCreateResult {

@@ -1,4 +1,4 @@
-use std::sync::{Arc, RwLock};
+use std::sync::{Arc, RwLock, RwLockWriteGuard};
 
 use intmap::IntMap;
 use once_cell::sync::Lazy;
@@ -26,4 +26,9 @@ pub fn insert(engine: Arc<Engine>) -> i64 {
     lock.insert(id.unsigned_abs(), engine);
 
     id
+}
+
+/// Get instances lock.
+pub fn lock() -> RwLockWriteGuard<'static, IntMap<Arc<Engine>>> {
+    unsafe { INSTANCES.write().unwrap() }
 }

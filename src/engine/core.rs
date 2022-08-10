@@ -9,6 +9,7 @@ use user_facing_errors::Error;
 
 use crate::{error::ApiError, string_to_c_char};
 
+type Result<T> = std::result::Result<T, ApiError>;
 type Executor = Box<dyn QueryExecutor + Send + Sync>;
 
 /// Holding the information to reconnect the engine if needed.
@@ -43,8 +44,6 @@ enum Inner {
 pub struct Engine {
     inner: RwLock<Inner>,
 }
-
-type Result<T> = std::result::Result<T, ApiError>;
 
 impl Inner {
     // Returns a builder if the engine is not connected
@@ -153,6 +152,27 @@ impl Engine {
         .await?;
 
         Ok(())
+    }
+
+    /// Disconnect and drop the core. Can be reconnected later with `#connect`.
+    pub async fn disconnect(&self) -> Result<()> {
+        async_panic_to_error(async {
+            let mut inner = self.inner.write().await;
+            let engine = inner.as_engine()?;
+
+            let config = datamodel::parse_configuration(&engine.datamodel.raw)
+                .map_err(|errors| ApiError::conversion(errors, &engine.datamodel.raw))?;
+
+            let builder = EngineBuilder {
+                datamodel: engine.datamodel.clone(),
+                config,
+            };
+
+            *inner = Inner::Builder(builder);
+
+            Ok(())
+        })
+        .await
     }
 }
 
