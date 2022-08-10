@@ -1,6 +1,7 @@
 use crate::engine::Result;
 
 pub mod commit;
+pub mod rollback;
 pub mod start;
 
 pub(crate) fn map_known_error(err: query_core::CoreError) -> Result<String> {
