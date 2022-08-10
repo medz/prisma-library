@@ -9,6 +9,7 @@ pub mod connect;
 pub mod create;
 pub mod disconnect;
 pub mod query;
+pub mod transaction;
 
 pub(crate) type Result<T> = std::result::Result<T, ApiError>;
 pub(crate) type Executor = Box<dyn QueryExecutor + Send + Sync>;
