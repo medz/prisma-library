@@ -2,12 +2,9 @@ use std::sync::Arc;
 
 use libc::c_char;
 
-use crate::{c_char_to_string, string_to_c_char};
+use crate::{c_char_to_string, error::ApiError};
 
-use super::{
-    core::{EngineBuilder, EngineDatamodel, Inner},
-    instance,
-};
+use super::{core::Engine, instance};
 
 /// Create engine result
 #[repr(C)]
@@ -15,7 +12,7 @@ pub enum EngineCreateResult {
     /// Engine created successfully
     Success(i64),
     /// Engine creation failed
-    Failure(*const c_char),
+    Failure(ApiError),
 }
 
 /// Create a query engine.
@@ -25,47 +22,11 @@ pub extern "C" fn engine_create(
     datasource: *const c_char,
 ) -> EngineCreateResult {
     let datamodel = c_char_to_string(datamodel);
-    let ast = datamodel::parse_datamodel(&datamodel);
-    if !ast.is_ok() {
-        let err = ast.unwrap_err();
-        let err = err.errors();
-        let err = err.first();
-        let err = err.unwrap();
-        let err = err.message();
-
-        return EngineCreateResult::Failure(string_to_c_char(err));
-    }
-
     let datasource_url = c_char_to_string(datasource);
-    let config = datamodel::parse_configuration(&datamodel).and_then(|mut config| {
-        for datasource in &mut config.subject.datasources {
-            datasource.url.value = Some(datasource_url.clone());
-            datasource.url.from_env_var = None;
-        }
+    let engine = Engine::new(datamodel, datasource_url);
 
-        Ok(config)
-    });
-    if config.is_err() {
-        let err = config.unwrap_err();
-        let err = err.errors().first().unwrap();
-        let err = string_to_c_char(&err.message());
-        return EngineCreateResult::Failure(err);
+    match engine {
+        Ok(engine) => EngineCreateResult::Success(instance::insert(Arc::new(engine))),
+        Err(err) => EngineCreateResult::Failure(err),
     }
-
-    let ast = ast.unwrap().subject;
-    let datamodel = EngineDatamodel {
-        ast,
-        raw: datamodel,
-    };
-
-    let builder = EngineBuilder {
-        datamodel,
-        config: config.unwrap(),
-    };
-    let builder = Inner::Builder(builder);
-    let builder = Arc::new(builder);
-
-    let id = instance::insert(builder);
-
-    EngineCreateResult::Success(id)
 }

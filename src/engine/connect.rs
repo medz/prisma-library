@@ -1,86 +1,30 @@
-use std::sync::Arc;
-
 use futures::executor as future_executor;
-use libc::c_char;
-use prisma_models::InternalDataModelBuilder;
-use query_core::{executor, schema_builder};
 
-use crate::string_to_c_char;
+use crate::{error::ApiError, string_to_c_char};
 
-use super::{
-    core::{ConnectedEngine, Inner},
-    instance::INSTANCES,
-};
+use super::instance::INSTANCES;
 
 /// Engine connect.
 #[no_mangle]
-pub extern "C" fn engine_connect(id: i64, callback: extern "C" fn(error: *const c_char)) {
-    let mut lock = unsafe { INSTANCES.write().unwrap() };
-    let inner = lock.get_mut(id.unsigned_abs());
+pub extern "C" fn engine_connect(
+    id: i64,
+    error: extern "C" fn(error: ApiError),
+    done: extern "C" fn(),
+) {
+    let key = id.unsigned_abs();
+    let lock = unsafe { INSTANCES.write().unwrap() };
+    let engine = lock.get(key);
 
-    if inner.is_none() {
-        let err = string_to_c_char("Engine not found");
-        callback(err);
-        return;
+    if let Some(engine) = engine {
+        let result = future_executor::block_on(engine.connect());
+        if result.is_ok() {
+            done();
+        } else {
+            error(result.err().unwrap());
+        }
+    } else {
+        let err = "Engine not found";
+        let err = string_to_c_char(err);
+        error(ApiError::Connector(err));
     }
-
-    let inner = inner.unwrap();
-
-    future_executor::block_on(async {
-        match inner.as_builder() {
-            Ok(builder) => {
-                let datasource = builder.config.subject.datasources.first().unwrap();
-                let url = datasource.url.value.as_ref().unwrap();
-
-                let executor = executor::load(datasource, &[], &url).await;
-                if executor.is_err() {
-                    let err = executor.err().unwrap();
-                    let err = err.to_string();
-                    let err = string_to_c_char(&err);
-                    callback(err);
-                    return;
-                }
-
-                let (dbname, executor) = executor.unwrap();
-
-                let connector = executor.primary_connector();
-                let result = connector.get_connection().await;
-                if result.is_err() {
-                    let err = result.err().unwrap();
-                    let err = err.to_string();
-                    let err = string_to_c_char(&err);
-                    callback(err);
-                    return;
-                }
-
-                let internal_data_model =
-                    InternalDataModelBuilder::from(&builder.datamodel.ast).build(dbname);
-
-                let query_schema = schema_builder::build(
-                    internal_data_model,
-                    true, // enable raw queries
-                    datasource.capabilities(),
-                    ([]).to_vec(),
-                    datasource.referential_integrity(),
-                );
-
-                let engine = ConnectedEngine {
-                    datamodel: builder.datamodel.clone(),
-                    query_schema: Arc::new(query_schema),
-                    executor,
-                };
-                let engine = Inner::Connected(engine);
-                let engine = Arc::new(engine);
-
-                // lock.insert(id.unsigned_abs(), engine);
-                *inner = engine;
-
-                callback(std::ptr::null());
-            }
-            Err(err) => {
-                let err = string_to_c_char(&err);
-                callback(err);
-            }
-        };
-    });
 }

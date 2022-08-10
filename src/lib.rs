@@ -1,5 +1,6 @@
 pub mod dmmf;
 pub mod engine;
+pub mod error;
 pub mod version;
 
 /// c_char to String
