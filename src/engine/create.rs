@@ -1,11 +1,12 @@
+use std::sync::Arc;
+
 use libc::c_char;
-use tokio::sync::RwLock;
 
 use crate::{c_char_to_string, string_to_c_char};
 
 use super::{
     core::{EngineBuilder, EngineDatamodel, Inner},
-    instance::INSTANCES,
+    instance,
 };
 
 /// Create engine result
@@ -62,14 +63,9 @@ pub extern "C" fn engine_create(
         config: config.unwrap(),
     };
     let builder = Inner::Builder(builder);
-    let builder = RwLock::new(builder);
+    let builder = Arc::new(builder);
 
-    let id = unsafe {
-        let id = INSTANCES.len() as i64;
-        INSTANCES.push(builder);
-
-        id
-    };
+    let id = instance::insert(builder);
 
     EngineCreateResult::Success(id)
 }

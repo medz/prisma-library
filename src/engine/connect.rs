@@ -15,17 +15,18 @@ use super::{
 /// Engine connect.
 #[no_mangle]
 pub extern "C" fn engine_connect(id: i64, callback: extern "C" fn(error: *const c_char)) {
-    let inner = unsafe { INSTANCES.get_mut(id as usize) };
+    let mut lock = unsafe { INSTANCES.write().unwrap() };
+    let inner = lock.get_mut(id.unsigned_abs());
+
     if inner.is_none() {
-        let err = "Invalid engine id";
-        let err = string_to_c_char(err);
+        let err = string_to_c_char("Engine not found");
         callback(err);
         return;
     }
+
     let inner = inner.unwrap();
 
     future_executor::block_on(async {
-        let mut inner = inner.write().await;
         match inner.as_builder() {
             Ok(builder) => {
                 let datasource = builder.config.subject.datasources.first().unwrap();
@@ -68,8 +69,11 @@ pub extern "C" fn engine_connect(id: i64, callback: extern "C" fn(error: *const 
                     query_schema: Arc::new(query_schema),
                     executor,
                 };
+                let engine = Inner::Connected(engine);
+                let engine = Arc::new(engine);
 
-                *inner = Inner::Connected(engine);
+                // lock.insert(id.unsigned_abs(), engine);
+                *inner = engine;
 
                 callback(std::ptr::null());
             }
