@@ -37,6 +37,9 @@ jobs:
       - name: Install cbindgen
         run: cargo install cbindgen
       
+      - name: Build
+        run: cargo build --verbose
+      
       - name: Build C header file
         run: cbindgen --config cbindgen.toml --output target/api.h
 
@@ -46,59 +49,59 @@ jobs:
           name: assets
           path: ${{ github.workspace }}/target/api.h
 
-  build-macos-x64:
-    needs: [test]
-    runs-on: macos-latest
-    steps:
-      - name: Install intel x86_64 toolchain
-        run: rustup target add x86_64-apple-darwin
+  # build-macos-x64:
+  #   needs: [test]
+  #   runs-on: macos-latest
+  #   steps:
+  #     - name: Install intel x86_64 toolchain
+  #       run: rustup target add x86_64-apple-darwin
 
-      - name: Build for macOS Intel x86_64
-        run: cargo build --verbose --target x86_64-apple-darwin --release
+  #     - name: Build for macOS Intel x86_64
+  #       run: cargo build --verbose --target x86_64-apple-darwin --release
 
-      - name: Reanme dynamic library
-        run: mv ${{ github.workspace }}/target/x86_64-apple-darwin/release/${{ github.workspace }}/target/x86_64-apple-darwin/release/libprisma_query_engine_c_api.dylib ${{ github.workspace }}/target/release/macos-intel-x86_64.dylib
+  #     - name: Reanme dynamic library
+  #       run: mv ${{ github.workspace }}/target/x86_64-apple-darwin/release/${{ github.workspace }}/target/x86_64-apple-darwin/release/libprisma_query_engine_c_api.dylib ${{ github.workspace }}/target/release/macos-intel-x86_64.dylib
 
-      - name: Upload dynamic library
-        uses: actions/upload-artifact@v2
-        with:
-          name: assets
-          path: ${{ github.workspace }}/target/release/macos-intel-x86_64.dylib
+  #     - name: Upload dynamic library
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: assets
+  #         path: ${{ github.workspace }}/target/release/macos-intel-x86_64.dylib
   
-  build-macos-silicon:
-    needs: [test]
-    runs-on: macos-latest
-    steps:
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          default: true
+  # build-macos-silicon:
+  #   needs: [test]
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions-rs/toolchain@v1
+  #       with:
+  #         toolchain: stable
+  #         default: true
     
-      - name: Install aarch64 toolchain
-        run: rustup target add aarch64-apple-darwin
+  #     - name: Install aarch64 toolchain
+  #       run: rustup target add aarch64-apple-darwin
 
-      - name: Build for macOS Silicon
-        run: cargo build --verbose --target aarch64-apple-darwin --release
+  #     - name: Build for macOS Silicon
+  #       run: cargo build --verbose --target aarch64-apple-darwin --release
       
-      - name: Rename dynamic library
-        run: mv target/release/libprisma_query_engine_c_api.dylib target/release/macos-silicon.dylib
+  #     - name: Rename dynamic library
+  #       run: mv target/release/libprisma_query_engine_c_api.dylib target/release/macos-silicon.dylib
       
-      - name: Upload dynamic library
-        uses: actions/upload-artifact@v2
-        with:
-          name: assets
-          path: ${{ github.workspace }}/target/release/macos-silicon.dylib
+  #     - name: Upload dynamic library
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: assets
+  #         path: ${{ github.workspace }}/target/release/macos-silicon.dylib
 
-  build-windows:
-    needs: [test]
-    runs-on: windows-latest
-    steps:
-      - uses: actions-rs/toolchain@v1
-        name: Build Windows dynamic library
-        with:
-          toolchain: stable
-          default: true
-      - run: cargo build --release --verbose
+  # build-windows:
+  #   needs: [test]
+  #   runs-on: windows-latest
+  #   steps:
+  #     - uses: actions-rs/toolchain@v1
+  #       name: Build Windows dynamic library
+  #       with:
+  #         toolchain: stable
+  #         default: true
+  #     - run: cargo build --release --verbose
 
-      - name: Rename dynamic library
-        run: mv target/release/libprisma_query_engine_c_api.dll target/release/windows.dll
+  #     - name: Rename dynamic library
+  #       run: mv target/release/libprisma_query_engine_c_api.dll target/release/windows.dll
