@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
+
       - uses: actions/cache@v2
         with:
           path: |
@@ -34,12 +34,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Install cbindgen
         run: cargo install cbindgen
-      
-      - name: Build
-        run: cargo build --verbose
       
       - name: Build C header file
         run: cbindgen --config cbindgen.toml --output target/api.h
