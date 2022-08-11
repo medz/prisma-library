@@ -63,5 +63,5 @@ jobs:
         with:
           name: assets
           path: ${{ github.workspace }}/assets
-        run: ls -al ${{ github.workspace }}/assets
+      - run: ls -al ${{ github.workspace }}/assets
           
