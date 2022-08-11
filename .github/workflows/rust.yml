@@ -35,7 +35,7 @@ jobs:
         run: cargo install cbindgen
       
       - name: Build C header file
-        run: cbindgen --config cbindgen.toml --crate prisma-query-engine-c-api --output target/api.h
+        run: cbindgen --config cbindgen.toml --output target/api.h
 
       - name: Upload `api.h` file
         uses: actions/upload-artifact@v2
@@ -47,11 +47,6 @@ jobs:
     needs: [test]
     runs-on: macos-latest
     steps:
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          default: true
-
       - name: Install intel x86_64 toolchain
         run: rustup target add x86_64-apple-darwin
 
