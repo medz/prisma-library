@@ -112,7 +112,7 @@ jobs:
       - run: rustup target add x86_64-pc-windows-msvc
       - name: Build
         run: cargo build --verbose --target x86_64-pc-windows-msvc --release
-      - run: ls -al target/x86_64-pc-windows-msvc/release
+      - run: ls target/x86_64-pc-windows-msvc/release
       - name: Copy dynamic library
         run: cp target/x86_64-pc-windows-msvc/release/prisma_query_engine_c_api.dll windows-x86_64-msvc.dll
       - name: Upload dynamic library
