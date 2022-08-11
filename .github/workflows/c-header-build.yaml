@@ -1,7 +1,8 @@
 name: C header builder
 on:
-  release:
-    type: [created, modified]
+  push:
+    tags:
+      - "v*.*.*"
 permissions:
   contents: write
 env:
@@ -25,8 +26,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            api.h
-            target/api.h
-            LICENSE
+            "api.h"
+            "**/*.h"
 
     
