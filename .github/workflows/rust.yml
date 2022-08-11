@@ -82,7 +82,7 @@ jobs:
         with:
           name: artifacts
           path: ${{ github.workspace }}
-      - run: ls -al ${{ github.workspace }}/artifacts
+      - run: ls -al ${{ github.workspace }}
       - name: Upload artifacts to release
         uses: softprops/action-gh-release@v1
         with:
