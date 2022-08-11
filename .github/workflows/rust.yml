@@ -60,7 +60,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-x86_64-${{ hashFiles('**/Cargo.lock') }}
       - run: rustup target add x86_64-apple-darwin
       - name: Build
         run: cargo build --verbose --target x86_64-apple-darwin --release
@@ -84,7 +84,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-silicon-${{ hashFiles('**/Cargo.lock') }}
       - run: rustup target add aarch64-apple-darwin
       - name: Build
         run: cargo build --verbose --target aarch64-apple-darwin --release
@@ -96,8 +96,8 @@ jobs:
           files: macos-silicon.dylib
           tag_name: v0.1.0
 
-  build-windows-x86_64-gun:
-    name: Build Windows x86_64 GUN
+  build-windows-x86_64-msvc:
+    name: Build Windows x86_64 MSVC
     needs: [test]
     runs-on: windows-latest
     steps:
@@ -108,16 +108,16 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-      - run: rustup target add x86_64-pc-windows-gnu
+          key: ${{ runner.os }}-x86_64-${{ hashFiles('**/Cargo.lock') }}
+      - run: rustup target add x86_64-pc-windows-msvc
       - name: Build
-        run: cargo build --verbose --target x86_64-pc-windows-gnu --release
-      - run: ls -al target/x86_64-pc-windows-gnu/release
+        run: cargo build --verbose --target x86_64-pc-windows-msvc --release
+      - run: ls -al target/x86_64-pc-windows-msvc/release
       - name: Copy dynamic library
-        run: cp target/x86_64-pc-windows-gnu/release/prisma_query_engine_c_api.dll windows-x86_64-gun.dll
+        run: cp target/x86_64-pc-windows-msvc/release/prisma_query_engine_c_api.dll windows-x86_64-msvc.dll
       - name: Upload dynamic library
         uses: softprops/action-gh-release@v1
         with:
-          files: windows-x86_64-gun.dll
+          files: windows-x86_64-msvc.dll
           tag_name: v0.1.0
 
