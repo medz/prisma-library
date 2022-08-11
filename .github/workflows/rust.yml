@@ -42,11 +42,11 @@ jobs:
         run: cargo install cbindgen
       - name: Build C header file
         run: cbindgen --config cbindgen.toml --output api.h
-      - name: Upload `api.h` file
-        uses: actions/upload-artifact@v2
+      - name: Upload C API header file
+        uses: softprops/action-gh-release@v1
         with:
-          name: artifacts
-          path: api.h
+          files: api.h
+          tag_name: v0.1.0
 
   build-macos_x86_64:
     needs: [test]
@@ -66,27 +66,8 @@ jobs:
       - name: Copy dynamic library
         run: cp target/x86_64-apple-darwin/release/libprisma_query_engine_c_api.dylib macos-x86_64.dylib
       - name: Upload dynamic library
-        uses: actions/upload-artifact@v2
-        with:
-          name: artifacts
-          path: macos-x86_64.dylib
-
-  deploy:
-    needs:
-      - build-c-header
-      - build-macos_x86_64
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v2
-        with:
-          name: artifacts
-          path: ${{ github.workspace }}
-      - run: ls -al ${{ github.workspace }}
-      - name: Upload artifacts to release
         uses: softprops/action-gh-release@v1
         with:
-          files: |
-            macos-x86_64.dylib
-            api.h
+          files: macos-x86_64.dylib
           tag_name: v0.1.0
+
