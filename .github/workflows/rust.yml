@@ -11,6 +11,7 @@ env:
 
 jobs:
   test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,12 +22,11 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-      - name: Build
-        run: cargo build --verbose
       - name: Run tests
         run: cargo test --verbose
 
   build-c-header:
+    name: Build C header file
     needs: [test]
     runs-on: ubuntu-latest
     steps:
@@ -49,6 +49,7 @@ jobs:
           tag_name: v0.1.0
 
   build-macos_x86_64:
+    name: Build macOS x86_64
     needs: [test]
     runs-on: macos-latest
     steps:
@@ -69,5 +70,29 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: macos-x86_64.dylib
+          tag_name: v0.1.0
+
+  build-macos-silicon:
+    name: Build macOS Silicon
+    needs: [test]
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+      - run: rustup target add aarch64-apple-darwin
+      - name: Build
+        run: cargo build --verbose --target aarch64-apple-darwin --release
+      - name: Copy dynamic library
+        run: cp target/aarch64-apple-darwin/release/libprisma_query_engine_c_api.dylib macos-silicon.dylib
+      - name: Upload dynamic library
+        uses: softprops/action-gh-release@v1
+        with:
+          files: macos-silicon.dylib
           tag_name: v0.1.0
 
