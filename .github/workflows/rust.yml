@@ -8,6 +8,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  DYNAMIC_LIBRARY_NAME: libprisma_query_engine_c_api
 
 jobs:
   test:
@@ -46,22 +47,47 @@ jobs:
         run: cargo install cbindgen
       
       - name: Build C header file
-        run: cbindgen --config cbindgen.toml --output target/api.h
+        run: cbindgen --config ${{ github.workspace }}/cbindgen.toml --output ${{ github.workspace }}/api.h
 
       - name: Upload `api.h` file
         uses: actions/upload-artifact@v2
         with:
-          name: assets
-          path: ${{ github.workspace }}/target/api.h
+          name: artifacts
+          path: ${{ github.workspace }}/api.h
 
-  deploy-c-header:
-    needs: [build-c-header]
+  build-macos_x86_64:
+    needs: [test]
+    runs-on: macos-x86_64
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+      - run: rustup target add x86_64-apple-darwin
+      - name: Build
+        run: cargo build --verbose --target x86_64-apple-darwin --release
+      - name: Copy dynamic library
+        run: cp ${{ github.workspace }}/target/x86_64-apple-darwin/release/${{ DYNAMIC_LIBRARY_NAME }}.dylib ${{ github.workspace }}/macos-x86_64.dylib
+      - name: Upload dynamic library
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: ${{ github.workspace }}/macos-x86_64.dylib
+
+  dump-artifacts:
+    needs:
+      - build-c-header
+      - build-macos_x86_64
     runs-on: ubuntu-latest
     steps:
       - name: Download `api.h` file
         uses: actions/download-artifact@v2
         with:
-          name: assets
-          path: ${{ github.workspace }}/assets
-      - run: ls -al ${{ github.workspace }}/assets
+          name: artifacts
+          path: ${{ github.workspace }}/artifacts
+      - run: ls -al ${{ github.workspace }}/artifacts
           
