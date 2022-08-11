@@ -14,9 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: Download dependencies
-        uses: actions/cache@v2
+      
+      - uses: actions/cache@v2
         with:
           path: |
             ~/.cargo/registry
@@ -34,6 +33,8 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+
       - name: Install cbindgen
         run: cargo install cbindgen
       
