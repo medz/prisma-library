@@ -8,7 +8,6 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  DYNAMIC_LIBRARY_NAME: libprisma_query_engine_c_api
 
 jobs:
   test:
@@ -57,7 +56,7 @@ jobs:
 
   build-macos_x86_64:
     needs: [test]
-    runs-on: macos-x86_64
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v2
@@ -71,7 +70,7 @@ jobs:
       - name: Build
         run: cargo build --verbose --target x86_64-apple-darwin --release
       - name: Copy dynamic library
-        run: cp ${{ github.workspace }}/target/x86_64-apple-darwin/release/${{ DYNAMIC_LIBRARY_NAME }}.dylib ${{ github.workspace }}/macos-x86_64.dylib
+        run: cp ${{ github.workspace }}/target/x86_64-apple-darwin/release/libprisma_query_engine_c_api.dylib ${{ github.workspace }}/macos-x86_64.dylib
       - name: Upload dynamic library
         uses: actions/upload-artifact@v2
         with:
