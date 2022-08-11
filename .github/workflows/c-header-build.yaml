@@ -1,7 +1,7 @@
 name: C header builder
 on:
   release:
-    type: [created]
+    type: [created, modified]
 permissions:
   contents: write
 env:
