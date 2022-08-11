@@ -54,71 +54,14 @@ jobs:
           name: assets
           path: ${{ github.workspace }}/target/api.h
 
-  build-macos-x64:
-    needs: [test]
-    runs-on: macos-latest
+  deploy-c-header:
+    needs: [build-c-header]
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-      - name: Install intel x86_64 toolchain
-        run: rustup target add x86_64-apple-darwin
-
-      - name: Build for macOS Intel x86_64
-        run: cargo build --verbose --target x86_64-apple-darwin --release
-
-      - name: Upload dynamic library
-        uses: actions/upload-artifact@v2
+      - name: Download `api.h` file
+        uses: actions/download-artifact@v2
         with:
           name: assets
-          path: ${{ github.workspace }}/target/x86_64-apple-darwin/release/${{ github.workspace }}/target/x86_64-apple-darwin/release/libprisma_query_engine_c_api.dylib
-  
-  build-macos-silicon:
-    needs: [test]
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-      - name: Install aarch64 toolchain
-        run: rustup target add aarch64-apple-darwin
-
-      - name: Build for macOS Silicon
-        run: cargo build --verbose --target aarch64-apple-darwin --release
-      
-      - name: Upload dynamic library
-        uses: actions/upload-artifact@v2
-        with:
-          name: assets
-          path: ${{ github.workspace }}/target/aarch64-apple-darwin/release/${{ github.workspace }}/target/aarch64-apple-darwin/release/libprisma_query_engine_c_api.dylib
-
-  build-windows:
-    needs: [test]
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v2
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-      - name: Build for Windows
-        run: cargo build --verbose --release
-
-      - name: Upload dynamic library
-        uses: actions/upload-artifact@v2
-        with:
-          name: assets
-          path: ${{ github.workspace }}/target/release/libprisma_query_engine_c_api.dll
+          path: ${{ github.workspace }}/assets
+        run: ls -al ${{ github.workspace }}/assets
+          
