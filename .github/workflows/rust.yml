@@ -41,40 +41,40 @@ jobs:
       - name: Install cbindgen
         run: cargo install cbindgen
       - name: Build C header file
-        run: cbindgen --config ${{ github.workspace }}/cbindgen.toml --output ${{ github.workspace }}/api.h
+        run: cbindgen --config cbindgen.toml --output api.h
       - name: Upload `api.h` file
         uses: actions/upload-artifact@v2
         with:
           name: artifacts
-          path: ${{ github.workspace }}/api.h
+          path: api.h
 
-  # build-macos_x86_64:
-  #   needs: [test]
-  #   runs-on: macos-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/cache@v2
-  #       with:
-  #         path: |
-  #           ~/.cargo/registry
-  #           ~/.cargo/git
-  #           target
-  #         key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-  #     - run: rustup target add x86_64-apple-darwin
-  #     - name: Build
-  #       run: cargo build --verbose --target x86_64-apple-darwin --release
-  #     - name: Copy dynamic library
-  #       run: cp ${{ github.workspace }}/target/x86_64-apple-darwin/release/libprisma_query_engine_c_api.dylib ${{ github.workspace }}/macos-x86_64.dylib
-  #     - name: Upload dynamic library
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: artifacts
-  #         path: ${{ github.workspace }}/macos-x86_64.dylib
+  build-macos_x86_64:
+    needs: [test]
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+      - run: rustup target add x86_64-apple-darwin
+      - name: Build
+        run: cargo build --verbose --target x86_64-apple-darwin --release
+      - name: Copy dynamic library
+        run: cp target/x86_64-apple-darwin/release/libprisma_query_engine_c_api.dylib macos-x86_64.dylib
+      - name: Upload dynamic library
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: macos-x86_64.dylib
 
   deploy:
     needs:
       - build-c-header
-      # - build-macos_x86_64
+      - build-macos_x86_64
     runs-on: ubuntu-latest
     steps:
       - name: Download artifacts
