@@ -63,9 +63,9 @@ jobs:
           - os: windows-latest
             artifact_name: windows-x86_64-msvc.dll
             rustup_target: x86_64-pc-windows-msvc
-          - os: windows-latest
-            artifact_name: windows-aarch64-msvc.dll
-            rustup_target: aarch64-pc-windows-msvc
+          # - os: windows-latest
+          #   artifact_name: windows-aarch64-msvc.dll
+          #   rustup_target: aarch64-pc-windows-msvc
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout repository
@@ -80,9 +80,18 @@ jobs:
             target
           key: ${{ runner.os }}-${{ matrix.rustup_target }}-${{ hashFiles('**/Cargo.lock') }}
 
-      - if: matrix.os == 'windows-latest'
-        name: Install Windows rust toolchain
-        run: rustup toolchain install stable-msvc
+      # - if: matrix.os == 'windows-latest'
+      #   name: Install Windows rust toolchain
+      #   run: rustup toolchain install stable-msvc
+
+      # - name: [Windows] Install Visual Studio with C++ development support
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     powershell -Command "& { Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory('C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Auxiliary\\Build\\vcvarsall.bat', 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.22.27905\\'); }"
+      #     powershell -Command "& { Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory('C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Auxiliary\\Build\\vcvarsall.bat', 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.22.27905\\amd64\\'); }"
+      #     powershell -Command "& { Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory('C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Auxiliary\\Build\\vcvarsall.bat', 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.22.27905\\x86\\'); }"
+      #     powershell -Command "& { Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]::ExtractToDirectory('C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Auxiliary\\Build\\vcvarsall.bat', 'C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\MSVC\\14.22.27905\\x86_amd64\\'); }"
+      #     powershell -Command "& { Add-Type -AssemblyName System.IO.Compression.FileSystem; [System.IO.Compression.ZipFile]
 
       - name: Setup Rust target
         run: rustup target add ${{ matrix.rustup_target }}
