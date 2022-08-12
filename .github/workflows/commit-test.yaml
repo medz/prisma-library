@@ -1,11 +1,16 @@
 name: Commit Test
 on:
-  push
+  push:
+    branches: [ "main" ]
   pull_request:
       paths-ignore:
         - '*.md'
         - LICENSE
-  workflow_call
+  workflow_call:
+    inputs:
+      ref:
+        description: The branch, tag or commit to build.
+        required: true
 env:
   CARGO_TERM_COLOR: always
 jobs:
