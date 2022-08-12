@@ -1,4 +1,4 @@
-name: Build macOS Dynamic Library
+name: Build Linux Dynamic Library
 on: workflow_call
 env:
   CARGO_TERM_COLOR: always
@@ -8,9 +8,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - os: macos-latest
+          - os: ubuntu-latest
             arch: x86_64
-          - os: macos-latest
+          - os: ubuntu-latest
             arch: aarch64
     runs-on: matrix.os
     steps:
@@ -22,14 +22,17 @@ jobs:
             ~/.cargo/git
             target
           key: build-${{ runner.os }}-${{ matrix.arch }}-dylib-${{ hashFiles('**/Cargo.lock') }}
+      - name: 'error: linking with cc failed: exit code: 1 (https://github.com/rust-lang/rust/issues/25289)'
+        if: matrix.arch == 'aarch64'
+        run: sudo apt install gcc-multilib
       - name: Set rustup target
-        run: rustup target add ${{ matrix.arch }}-apple-darwin
+        run: rustup target add ${{ matrix.arch }}-unknown-linux-gnu
       - name: Build
-        run: cargo build --target ${{ matrix.arch }}-apple-darwin --release --verbose
+        run: cargo build --target ${{ matrix.arch }}-unknown-linux-gnu --release --verbose
       - name: Rename artifact
-        run: mv target/${{ matrix.arch }}-apple-darwin/release/libprisma_query_engine_c_api.dylib macos-${{ matrix.arch }}.dylib
+        run: mv target/${{ matrix.arch }}-unknown-linux-gnu/release/libprisma_query_engine_c_api.so linux-${{ matrix.arch }}.so
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: artifacts
-          path: macos-${{ matrix.arch }}.dylib
+          path: linux-${{ matrix.arch }}.so

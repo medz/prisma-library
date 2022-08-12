@@ -8,7 +8,10 @@ jobs:
     uses: ./.github/workflows/c-api.yaml
     with:
       upload_artifact: true
-  build-macOS-dylib:
+  build-macos-dylib:
     needs: [test]
     uses: ./.github/workflows/build-macos-dylib.yaml
+  build-linux-so:
+    needs: [test]
+    uses: ./.github/workflows/build-linux-so.yaml
   
