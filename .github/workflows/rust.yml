@@ -108,10 +108,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: artifacts
-          path: artifacts
       - name: Upload artifacts to GitHub release
         uses: softprops/action-gh-release@v1
-        working-directory: artifacts
         with:
           files: |
             *.h
