@@ -47,6 +47,7 @@ jobs:
         with:
           name: artifacts
           path: api.h
+
   build-dynamic-library:
     needs: [test]
     name: Build Dynamic Library
@@ -107,7 +108,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: artifacts
-          path: artifacts/
+          path: artifacts
       - name: Upload artifacts to GitHub release
         working-directory: artifacts
         uses: softprops/action-gh-release@v1
