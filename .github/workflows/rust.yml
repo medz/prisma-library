@@ -110,8 +110,7 @@ jobs:
       #   run: rustup toolchain install stable-msvc
 
       # If artifact_name prefix is `android`, then set COMPILER_DIR environment variable
-      - if: matrix.artifact_name.startsWith('android')
-      # - if: ${{ startsWith(matrix.artifact_name, 'android') }}
+      - if: ${{ startsWith(matrix.artifact_name, 'android') }}
         name: Set NDK and COMPILER_DIR environment variables
         env:
           COMPILER_DIR: ${{ env.ANDROID_NDK_HOME }}/toolchains/llvm/darwin-x86_64/bin
