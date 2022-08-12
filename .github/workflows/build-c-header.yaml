@@ -1,0 +1,45 @@
+name: Build C Header
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    paths-ignore:
+      - '*.md'
+      - LICENSE
+  workflow_call:
+    inputs:
+      ref:
+        description: 'The branch, tag or commit to build.'
+        required: true
+        type: string
+      upload_artifact:
+        description: 'Upload artifact.'
+        required: false
+        type: boolean
+        default: false
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-build-c-header-${{ hashFiles('**/Cargo.lock') }}
+      - name: Install cbindgen
+        run: cargo install cbindgen
+      - name: Build C header file
+        run: cbindgen --config cbindgen.toml --output api.h
+      - name: Upload artifact
+        if: ${{ inputs.upload_artifact }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: api.h
