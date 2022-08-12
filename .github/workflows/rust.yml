@@ -50,40 +50,50 @@ jobs:
 
   build-dynamic-library:
     needs: [test]
-    name: Build Dynamic Library
+    name: Build
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: macos-latest
             artifact_name: macos-x86_64.dylib
+            local_filename: libprisma_query_engine_c_api.dylib
             rustup_target: x86_64-apple-darwin
           - os: macos-latest
             artifact_name: macos-silicon.dylib
+            local_filename: libprisma_query_engine_c_api.dylib
             rustup_target: aarch64-apple-darwin
           - os: macos-latest
             artifact_name: ios-amd64.a
+            local_filename: libprisma_query_engine_c_api.a
             rustup_target: aarch64-apple-ios
           - os: macos-latest
             artifact_name: ios-x86_64.a
+            local_filename: libprisma_query_engine_c_api.a
             rustup_target: x86_64-apple-ios
           - os: macos-latest
             artifact_name: android-arm64.so
+            local_filename: libprisma_query_engine_c_api.so
             rustup_target: aarch64-linux-android
           - os: macos-latest
             artifact_name: android-armv7.so
+            local_filename: libprisma_query_engine_c_api.so
             rustup_target: armv7-linux-androideabi
           - os: macos-latest
             artifact_name: android-i686.so
+            local_filename: libprisma_query_engine_c_api.so
             rustup_target: i686-linux-android
           - os: macos-latest
             artifact_name: android-x86_64.so
+            local_filename: libprisma_query_engine_c_api.so
             rustup_target: x86_64-linux-android
           - os: ubuntu-latest
             artifact_name: linux-x86_64.so
+            local_filename: libprisma_query_engine_c_api.so
             rustup_target: x86_64-unknown-linux-gnu
           - os: ubuntu-latest
             artifact_name: linux-aarch64.so
+            local_filename: libprisma_query_engine_c_api.so
             rustup_target: aarch64-unknown-linux-gnu
           # - os: windows-latest
           #   artifact_name: windows-x86_64-msvc.dll
@@ -113,32 +123,34 @@ jobs:
       - if: ${{ startsWith(matrix.artifact_name, 'android') }}
         name: Set NDK and COMPILER_DIR environment variables
         env:
+          NDK: ${{ env.ANDROID_NDK_HOME }}
           COMPILER_DIR: ${{ env.ANDROID_NDK_HOME }}/toolchains/llvm/darwin-x86_64/bin
         run: echo ${{ env.COMPILER_DIR }}
 
       # If artifact_name prefix is `android`, then set cargo target environment variables
-      # - if: matrix.artifact_name.startsWith('android')
-      #   name: Set cargo target environment variables
-      #   env:
-      #     CC_i686_linux_android: ${{ env.COMPILER_DIR }}/i686-linux-android21-clang
-      #     AR_i686_linux_android: ${{ env.COMPILER_DIR }}/llvm-ar
-      #     CARGO_TARGET_I686_LINUX_ANDROID_LINKER: ${{ env.COMPILER_DIR }}/i686-linux-android21-clang
-      #     CARGO_TARGET_I686_LINUX_ANDROID_AR: ${{ env.COMPILER_DIR }}/llvm-ar
-      #     ####################################################################
-      #     CC_x86_64_linux_android: ${{ env.COMPILER_DIR }}/x86_64-linux-android21-clang
-      #     AR_x86_64_linux_android: ${{ env.COMPILER_DIR }}/llvm-ar
-      #     CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER: ${{ env.COMPILER_DIR }}/x86_64-linux-android21-clang
-      #     CARGO_TARGET_X86_64_LINUX_ANDROID_AR: ${{ env.COMPILER_DIR }}/llvm-ar
-      #     ####################################################################
-      #     CC_armv7_linux_androideabi: ${{ env.COMPILER_DIR }}/armv7a-linux-androideabi21-clang
-      #     AR_armv7_linux_androideabi: ${{ env.COMPILER_DIR }}/llvm-ar
-      #     CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER: ${{ env.COMPILER_DIR }}/armv7a-linux-androideabi21-clang
-      #     CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_AR: ${{ env.COMPILER_DIR }}/llvm-ar
-      #     ####################################################################
-      #     CC_aarch64_linux_android: ${{ env.COMPILER_DIR }}/aarch64-linux-android21-clang
-      #     AR_aarch64_linux_android: ${{ env.COMPILER_DIR }}/llvm-ar
-      #     CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER: ${{ env.COMPILER_DIR }}/aarch64-linux-android21-clang
-      #     CARGO_TARGET_AARCH64_LINUX_ANDROID_AR: ${{ env.COMPILER_DIR }}/llvm-ar
+      - if: ${{ startsWith(matrix.artifact_name, 'android') }}
+        name: Set cargo target environment variables
+        env:
+          CC_i686_linux_android: ${{ env.COMPILER_DIR }}/i686-linux-android21-clang
+          AR_i686_linux_android: ${{ env.COMPILER_DIR }}/llvm-ar
+          CARGO_TARGET_I686_LINUX_ANDROID_LINKER: ${{ env.COMPILER_DIR }}/i686-linux-android21-clang
+          CARGO_TARGET_I686_LINUX_ANDROID_AR: ${{ env.COMPILER_DIR }}/llvm-ar
+          ####################################################################
+          CC_x86_64_linux_android: ${{ env.COMPILER_DIR }}/x86_64-linux-android21-clang
+          AR_x86_64_linux_android: ${{ env.COMPILER_DIR }}/llvm-ar
+          CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER: ${{ env.COMPILER_DIR }}/x86_64-linux-android21-clang
+          CARGO_TARGET_X86_64_LINUX_ANDROID_AR: ${{ env.COMPILER_DIR }}/llvm-ar
+          ####################################################################
+          CC_armv7_linux_androideabi: ${{ env.COMPILER_DIR }}/armv7a-linux-androideabi21-clang
+          AR_armv7_linux_androideabi: ${{ env.COMPILER_DIR }}/llvm-ar
+          CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER: ${{ env.COMPILER_DIR }}/armv7a-linux-androideabi21-clang
+          CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_AR: ${{ env.COMPILER_DIR }}/llvm-ar
+          ####################################################################
+          CC_aarch64_linux_android: ${{ env.COMPILER_DIR }}/aarch64-linux-android21-clang
+          AR_aarch64_linux_android: ${{ env.COMPILER_DIR }}/llvm-ar
+          CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER: ${{ env.COMPILER_DIR }}/aarch64-linux-android21-clang
+          CARGO_TARGET_AARCH64_LINUX_ANDROID_AR: ${{ env.COMPILER_DIR }}/llvm-ar
+        run: echo ${{ env.NDK }}
 
       - name: Setup Rust target
         run: rustup target add ${{ matrix.rustup_target }}
@@ -147,15 +159,15 @@ jobs:
         run: cargo build --release --target ${{ matrix.rustup_target }} --verbose
 
       - name: Delete old artifact
-        run: rm -f ${{ matrix.artifact_name }}
+        run: |
+          rm -f ${{ matrix.artifact_name }}
+          ls target/${{ matrix.rustup_target }}/release
 
       # - if: matrix.os == 'windows-latest'
       #   name: Copy Windows DLL
       #   run: cp target/${{ matrix.rustup_target }}/release/prisma_query_engine_c_api.dll ${{ matrix.artifact_name }}
-
-      - if: matrix.os != 'windows-latest'
         name: Copy Dynamic Library
-        run: cp target/${{ matrix.rustup_target }}/release/libprisma_query_engine_c_api.dylib ${{ matrix.artifact_name }}
+        run: cp target/${{ matrix.rustup_target }}/release/${{ matrix.local_filename }} ${{ matrix.artifact_name }}
 
       - name: Upload Dynamic Library artifact
         uses: actions/upload-artifact@v3
@@ -164,7 +176,7 @@ jobs:
           path: ${{ matrix.artifact_name }}
 
   deploy:
-    name: Deploy Dynamic Library
+    name: Deploy
     needs: 
       - build-c-header
       - build-dynamic-library
