@@ -9,8 +9,9 @@ on:
   workflow_call:
     inputs:
       ref:
-        description: The branch, tag or commit to build.
+        description: 'The branch, tag or commit to build.'
         required: true
+        type: string
 env:
   CARGO_TERM_COLOR: always
 jobs:
@@ -27,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.ref }}
+          ref: ${{ inputs.ref }}
       - uses: actions/cache@v3
         with:
           path: |
