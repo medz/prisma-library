@@ -1,4 +1,4 @@
-name: Build C Header
+name: Build C API [api.h]
 on:
   push:
     branches: [ "main" ]

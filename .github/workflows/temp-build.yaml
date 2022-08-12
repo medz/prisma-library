@@ -1,0 +1,14 @@
+name: Temp Build, 随后删除
+on: push
+jobs:
+  test:
+    uses: .github/workflows/commit-test.yaml
+  build-c-api:
+    needs: [test]
+    uses: .github/workflows/c-api.yaml
+    with:
+      upload_artifact: true
+  build-macOS-dylib:
+    needs: [test]
+    uses: .github/workflows/build-macos-dylib.yaml
+  
