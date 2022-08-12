@@ -47,77 +47,48 @@ jobs:
         with:
           files: api.h
           tag_name: v0.1.0
-
-  build-macos_x86_64:
-    name: Build macOS x86_64
+  build-dynamic-library:
     needs: [test]
-    runs-on: macos-latest
+    name: Build Dynamic Library
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            asset_name: macos-x86_64.dylib
+            rustup_target: x86_64-apple-darwin
+          - os: macos-latest
+            asset_name: macos-silicon.dylib
+            rustup_target: aarch64-apple-darwin
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Cache Rust
+        uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-x86_64-${{ hashFiles('**/Cargo.lock') }}
-      - run: rustup target add x86_64-apple-darwin
-      - name: Build
-        run: cargo build --verbose --target x86_64-apple-darwin --release
-      - name: Copy dynamic library
-        run: cp target/x86_64-apple-darwin/release/libprisma_query_engine_c_api.dylib macos-x86_64.dylib
-      - name: Upload dynamic library
+          key: ${{ runner.os }}-${{ matrix.rustup_target }}-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Setup Rust target
+        run: rustup target add ${{ matrix.rustup_target }}
+
+      - name: Build Dynamic Library
+        run: cargo build --release --target ${{ matrix.rustup_target }} --verbose
+
+      - if: matrix.os == 'windows-latest'
+        name: Copy Windows ddl
+        run: cp target/${{ matrix.rustup_target }}/release/prisma_query_engine_c_api.dll ${{ matrix.asset_name }}
+
+      - if: matrix.os != 'windows-latest'
+        name: Copy Dynamic Library
+        run: cp target/${{ matrix.rustup_target }}/release/libprisma_query_engine_c_api.dylib ${{ matrix.asset_name }}
+
+      - name: Upload Dynamic Library
         uses: softprops/action-gh-release@v1
         with:
-          files: macos-x86_64.dylib
-          tag_name: v0.1.0
-
-  build-macos-silicon:
-    name: Build macOS Silicon
-    needs: [test]
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-silicon-${{ hashFiles('**/Cargo.lock') }}
-      - run: rustup target add aarch64-apple-darwin
-      - name: Build
-        run: cargo build --verbose --target aarch64-apple-darwin --release
-      - name: Copy dynamic library
-        run: cp target/aarch64-apple-darwin/release/libprisma_query_engine_c_api.dylib macos-silicon.dylib
-      - name: Upload dynamic library
-        uses: softprops/action-gh-release@v1
-        with:
-          files: macos-silicon.dylib
-          tag_name: v0.1.0
-
-  build-windows-x86_64-msvc:
-    name: Build Windows x86_64 MSVC
-    needs: [test]
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-x86_64-${{ hashFiles('**/Cargo.lock') }}
-      - run: rustup target add x86_64-pc-windows-msvc
-      - name: Build
-        run: cargo build --verbose --target x86_64-pc-windows-msvc --release
-      - run: ls target/x86_64-pc-windows-msvc/release
-      - name: Copy dynamic library
-        run: cp target/x86_64-pc-windows-msvc/release/prisma_query_engine_c_api.dll windows-x86_64-msvc.dll
-      - name: Upload dynamic library
-        uses: softprops/action-gh-release@v1
-        with:
-          files: windows-x86_64-msvc.dll
-          tag_name: v0.1.0
-
+          files: ${{ matrix.asset_name }}
+          tag_name: v0.1.0 
