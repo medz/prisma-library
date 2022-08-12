@@ -6,6 +6,8 @@ on:
       paths-ignore:
         - '*.md'
         - LICENSE
+  workflow_call:
+    inputs: # null
 env:
   CARGO_TERM_COLOR: always
 jobs:
