@@ -1,17 +1,11 @@
 name: Commit Test
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    paths-ignore:
-      - '*.md'
-      - LICENSE
-  workflow_dispatch:
-    inputs:
-      ref:
-        description: The branch, tag or SHA to checkout.
-        required: true
+  - push
+  - pull_request:
+      paths-ignore:
+        - '*.md'
+        - LICENSE
+  - workflow_call
 env:
   CARGO_TERM_COLOR: always
 jobs:
@@ -28,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.inputs.ref ?? github.ref }}
+          ref: ${{ github.event.inputs.ref }}
       - uses: actions/cache@v3
         with:
           path: |
