@@ -43,7 +43,7 @@ jobs:
       - name: Build C header file
         run: cbindgen --config cbindgen.toml --output api.h
       - name: Upload artifact
-        uses: actions/upload-artifact
+        uses: actions/upload-artifact@v3
         with:
           name: artifacts
           path: api.h
