@@ -115,6 +115,7 @@ jobs:
         name: Set NDK and COMPILER_DIR environment variables
         env:
           COMPILER_DIR: ${{ env.ANDROID_NDK_HOME }}/toolchains/llvm/darwin-x86_64/bin
+        run: echo ${{ env.COMPILER_DIR }}
 
       # If artifact_name prefix is `android`, then set cargo target environment variables
       # - if: matrix.artifact_name.startsWith('android')
