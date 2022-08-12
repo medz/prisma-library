@@ -97,24 +97,24 @@ jobs:
           name: artifacts
           path: ${{ matrix.artifact_name }}
 
-  deploy:
-    name: Deploy Dynamic Library
-    needs: 
-      - build-c-header
-      - build-dynamic-library
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: artifacts
-          path: artifacts
-      - name: Upload artifacts to GitHub release
-        working-directory: artifacts
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            *.h
-            *.dll
-            *.dylib
-          tag_name: v0.1.0 
+  # deploy:
+  #   name: Deploy Dynamic Library
+  #   needs: 
+  #     - build-c-header
+  #     - build-dynamic-library
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download artifacts
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: artifacts
+  #         path: artifacts
+  #     - name: Upload artifacts to GitHub release
+  #       working-directory: artifacts
+  #       uses: softprops/action-gh-release@v1
+  #       with:
+  #         files: |
+  #           *.h
+  #           *.dll
+  #           *.dylib
+  #         tag_name: v0.1.0 
