@@ -9,9 +9,11 @@ jobs:
     with:
       upload_artifact: true
   build-macos-dylib:
+    concurrency: macos-${{ github.ref }}
     needs: [test]
     uses: ./.github/workflows/build-macos-dylib.yaml
   build-linux-so:
+    concurrency: linux-${{ github.ref }}
     needs: [test]
     uses: ./.github/workflows/build-linux-so.yaml
   
