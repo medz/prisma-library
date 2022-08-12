@@ -6,29 +6,13 @@ on:
       paths-ignore:
         - '*.md'
         - LICENSE
-  workflow_call:
-    inputs:
-      ref:
-        description: 'The branch, tag or commit to build.'
-        required: true
-        type: string
 env:
   CARGO_TERM_COLOR: always
 jobs:
   test:
-    name: Test
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-          - macos-latest
-          - windows-latest
-          - ubuntu-latest
-    runs-on: matrix.os
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ inputs.ref }}
       - uses: actions/cache@v3
         with:
           path: |

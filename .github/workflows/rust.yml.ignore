@@ -17,14 +17,6 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            artifact_name: macos-x86_64.dylib
-            local_filename: libprisma_query_engine_c_api.dylib
-            rustup_target: x86_64-apple-darwin
-          - os: macos-latest
-            artifact_name: macos-silicon.dylib
-            local_filename: libprisma_query_engine_c_api.dylib
-            rustup_target: aarch64-apple-darwin
-          - os: macos-latest
             artifact_name: ios-amd64.a
             local_filename: libprisma_query_engine_c_api.a
             rustup_target: aarch64-apple-ios
