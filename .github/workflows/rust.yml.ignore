@@ -10,24 +10,8 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  test:
-    name: Test
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
-          key: ${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
-      - name: Run tests
-        run: cargo test --verbose
-
   build-c-header:
     name: Build C header file
-    needs: [test]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -49,7 +33,6 @@ jobs:
           path: api.h
 
   build-dynamic-library:
-    needs: [test]
     name: Build
     strategy:
       fail-fast: false
