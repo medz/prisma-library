@@ -1,11 +1,11 @@
 name: Commit Test
 on:
-  - push
-  - pull_request:
+  push
+  pull_request:
       paths-ignore:
         - '*.md'
         - LICENSE
-  - workflow_call
+  workflow_call
 env:
   CARGO_TERM_COLOR: always
 jobs:
