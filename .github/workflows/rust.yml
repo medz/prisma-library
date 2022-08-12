@@ -166,7 +166,7 @@ jobs:
       # - if: matrix.os == 'windows-latest'
       #   name: Copy Windows DLL
       #   run: cp target/${{ matrix.rustup_target }}/release/prisma_query_engine_c_api.dll ${{ matrix.artifact_name }}
-        name: Copy Dynamic Library
+      - name: Copy Dynamic Library
         run: cp target/${{ matrix.rustup_target }}/release/${{ matrix.local_filename }} ${{ matrix.artifact_name }}
 
       - name: Upload Dynamic Library artifact
