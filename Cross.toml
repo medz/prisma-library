@@ -1,2 +1,2 @@
 [target.aarch64-unknown-linux-gnu]
-pre-build = "./.buildkit/cross-install-openssl.sh"
+pre-build = "./.cross-buildkit/cross-install-openssl.sh"
