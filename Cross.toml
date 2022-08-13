@@ -1,2 +1,2 @@
 [target.aarch64-unknown-linux-gnu]
-pre-build = ["apt-get install libssl-dev -y"]
+pre-build = "./.buildkit/cross-install-openssl.sh"
