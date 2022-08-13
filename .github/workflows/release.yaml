@@ -48,7 +48,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             target
-          key: ${{ runner.os }}-${{ matrix.rustup_target }}-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ matrix.rustup_target }}-${{ hashFiles('**/Cargo.lock') }}
 
       - if: matrix.rustup_target == 'aarch64-unknown-linux-gnu'
         run: sudo apt install gcc-multilib
@@ -61,7 +61,6 @@ jobs:
       - name: Overwrite artifacts
         run: |
           rm -f ${{ matrix.artifact_name }}
-          ls target/${{ matrix.rustup_target }}/release
           cp target/${{ matrix.rustup_target }}/release/${{ matrix.local_filename }} ${{ matrix.artifact_name }}
 
       - name: Upload artifacts
