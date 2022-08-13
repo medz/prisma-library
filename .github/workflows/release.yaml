@@ -39,9 +39,15 @@ jobs:
             rustup_target: aarch64-unknown-linux-gnu
             artifact_name: linux-aarch64.so
             local_filename: libprisma_query_engine_c_api.so
+            cross: true
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          default: true
+          target: ${{ matrix.rustup_target }}
       - uses: actions/cache@v3
         with:
           path: |
@@ -50,13 +56,19 @@ jobs:
             target
           key: ${{ matrix.rustup_target }}-${{ hashFiles('**/Cargo.lock') }}
 
-      - if: matrix.rustup_target == 'aarch64-unknown-linux-gnu'
-        run: sudo apt install gcc-multilib
+      # - if: matrix.rustup_target == 'aarch64-unknown-linux-gnu'
+      #   run: sudo apt install gcc-multilib
 
+      # - name: Build library
+      #   run: |
+      #     rustup target add ${{ matrix.rustup_target }} --toolchain stable
+      #     cargo build --release --target ${{ matrix.rustup_target }} --verbose
       - name: Build library
-        run: |
-          rustup target add ${{ matrix.rustup_target }} --toolchain stable
-          cargo build --release --target ${{ matrix.rustup_target }} --verbose
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          use-cross: ${{ matrix.cross || false }}
+          args: --release --target ${{ matrix.rustup_target }} --verbose
 
       - name: Overwrite artifacts
         run: |
