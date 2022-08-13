@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-apt-get update && apt-get install pkg-config libssl-dev -y
+apt-get update && apt-get install pkg-config libssl-dev openssl -y
