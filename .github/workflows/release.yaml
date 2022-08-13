@@ -39,6 +39,10 @@ jobs:
             rustup_target: x86_64-apple-darwin
             artifact_name: macos-x86_64.dylib
             local_filename: libprisma_query_engine_c_api.dylib
+          - os: macos-latest
+            rustup_target: aarch64-apple-darwin
+            artifact_name: macos-aarch64.dylib
+            local_filename: libprisma_query_engine_c_api.dylib
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
