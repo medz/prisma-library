@@ -35,10 +35,10 @@ jobs:
             rustup_target: x86_64-unknown-linux-gnu
             artifact_name: linux-x86_64-gnu.so
             local_filename: libprisma_query_engine_c_api.so
-          - os: ubuntu-latest
-            rustup_target: x86_64-unknown-linux-musl
-            artifact_name: linux-x86_64-musl.so
-            local_filename: libprisma_query_engine_c_api.so
+          - os: macos-latest
+            rustup_target: x86_64-apple-darwin
+            artifact_name: macos-x86_64.dylib
+            local_filename: libprisma_query_engine_c_api.dylib
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
