@@ -55,6 +55,8 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ matrix.rustup_target }}-${{ hashFiles('**/Cargo.lock') }}
+      - name: Install Cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
 
       # - if: matrix.rustup_target == 'aarch64-unknown-linux-gnu'
       #   run: sudo apt install gcc-multilib
@@ -62,7 +64,7 @@ jobs:
       # - name: Build library
       #   run: |
       #     rustup target add ${{ matrix.rustup_target }} --toolchain stable
-      #     cargo build --release --target ${{ matrix.rustup_target }} --verbose
+      #     cross build --release --target ${{ matrix.rustup_target }} --verbose
       - name: Build library
         uses: actions-rs/cargo@v1
         with:
