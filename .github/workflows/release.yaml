@@ -51,7 +51,7 @@ jobs:
           key: ${{ matrix.rustup_target }}-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Rustup target
-        run rustup target add ${{ matrix.rustup_target }}
+        run: rustup target add ${{ matrix.rustup_target }}
 
       - name: Build library
         run: cargo build --release --target ${{ matrix.rustup_target }} --verbose
