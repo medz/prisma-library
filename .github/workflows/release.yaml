@@ -5,6 +5,7 @@ env:
 jobs:
   # Build C API [api.h] file
   build-c-api:
+    name: build (C-API)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -25,7 +26,7 @@ jobs:
           name: artifacts
           path: api.h
   # Build libraries
-  build-libs:
+  build:
     strategy:
       fail-fast: false
       matrix:
@@ -40,17 +41,17 @@ jobs:
             local_filename: libprisma_query_engine_c_api.so
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Cache
-        uses: actions/cache@v3
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
           key: ${{ runner.os }}-${{ matrix.rustup_target }}-${{ hashFiles('**/Cargo.lock') }}
+
+      - if: runner.rustup_target == 'aarch64-unknown-linux-gnu'
+        run: sudo apt install gcc-multilib
 
       - name: Build library
         run: |
