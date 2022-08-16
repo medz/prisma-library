@@ -24,7 +24,7 @@ request-handlers = { git = "https://github.com/prisma/prisma-engines" }
 user-facing-errors = { git = "https://github.com/prisma/prisma-engines" }
 sql-connector = { git = "https://github.com/prisma/prisma-engines", package = "sql-query-connector" }
 
-libc = "0.2.131"
+libc = "0.2.132"
 thiserror = "1.0.32"
 serde = "1.0.143"
 serde_json = "1.0.83"
