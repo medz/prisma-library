@@ -1,27 +1,30 @@
-use std::process::Command;
-
-fn store_git_commit_hash() {
+fn git_hash() -> String {
+    use std::process::Command;
     let output = Command::new("git")
         .args(&["rev-parse", "HEAD"])
         .output()
-        .unwrap();
-    let git_hash = String::from_utf8(output.stdout).unwrap();
-    println!("cargo:rustc-env=GIT_HASH={}", git_hash);
+        .expect("Failed to execute git command");
+    
+    String::from_utf8(output.stdout).expect("Failed to parse git output")
 }
 
-fn generate_c_header() {
-    let output_path = "target/api.h";
-    let crate_dir = std::env::var("CARGO_MANIFEST_DIR").unwrap();
-    let mut config = cbindgen::Config::default();
-    config.language = cbindgen::Language::C;
-    config.no_includes = true;
+fn capi_generator() {
+    use std::env;
+    use cbindgen::{Builder, Language};
 
-    cbindgen::generate_with_config(crate_dir, config)
-        .unwrap()
-        .write_to_file(output_path);
+    let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+
+    Builder::new()
+        .with_crate(crate_dir)
+        .with_language(Language::C)
+        .with_no_includes()
+        .generate()
+        .expect("Unable to generate bindings")
+        .write_to_file("target/prisma.h");
 }
 
 fn main() {
-    store_git_commit_hash();
-    generate_c_header();
+    println!("cargo:rustc-env=GIT_HASH={}", git_hash());
+
+    capi_generator();
 }
