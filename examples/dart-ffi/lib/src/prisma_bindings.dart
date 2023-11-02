@@ -19,25 +19,38 @@ class PrismaBindings {
           lookup)
       : _lookup = lookup;
 
-  /// Returns the semantic version of the library.
-  ffi.Pointer<ffi.Char> get_prisma_semantic_version() {
-    return _get_prisma_semantic_version();
+  /// Format a schema.
+  ///
+  /// ## Arguments
+  ///
+  /// - `schema` - The schema to format.
+  /// - `params` - The formatting parameters as a JSON string.
+  ffi.Pointer<ffi.Char> prisma_schema_format(
+    ffi.Pointer<ffi.Char> schema,
+    ffi.Pointer<ffi.Char> params,
+  ) {
+    return _prisma_schema_format(
+      schema,
+      params,
+    );
   }
 
-  late final _get_prisma_semantic_versionPtr =
-      _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
-          'get_prisma_semantic_version');
-  late final _get_prisma_semantic_version = _get_prisma_semantic_versionPtr
-      .asFunction<ffi.Pointer<ffi.Char> Function()>();
+  late final _prisma_schema_formatPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('prisma_schema_format');
+  late final _prisma_schema_format = _prisma_schema_formatPtr.asFunction<
+      ffi.Pointer<ffi.Char> Function(
+          ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
-  /// Returns the git commit hash of the library.
-  ffi.Pointer<ffi.Char> get_prisma_git_commit_hash() {
-    return _get_prisma_git_commit_hash();
+  /// Returns the version of the Prisma library.
+  ffi.Pointer<ffi.Char> prisma_version() {
+    return _prisma_version();
   }
 
-  late final _get_prisma_git_commit_hashPtr =
+  late final _prisma_versionPtr =
       _lookup<ffi.NativeFunction<ffi.Pointer<ffi.Char> Function()>>(
-          'get_prisma_git_commit_hash');
-  late final _get_prisma_git_commit_hash = _get_prisma_git_commit_hashPtr
-      .asFunction<ffi.Pointer<ffi.Char> Function()>();
+          'prisma_version');
+  late final _prisma_version =
+      _prisma_versionPtr.asFunction<ffi.Pointer<ffi.Char> Function()>();
 }

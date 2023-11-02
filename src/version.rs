@@ -1,11 +1,9 @@
-/// Returns the semantic version of the library.
-#[no_mangle]
-pub extern "C" fn get_prisma_semantic_version() -> *const u8 {
-    env!("CARGO_PKG_VERSION").as_ptr() 
-}
+use std::ffi::CString;
 
-/// Returns the git commit hash of the library.
+/// Returns the version of the Prisma library.
 #[no_mangle]
-pub extern "C" fn get_prisma_git_commit_hash() -> *const u8 {
-    env!("GIT_HASH").as_ptr()
+pub extern "C" fn prisma_version() -> *const libc::c_char {
+    let version = env!("CARGO_PKG_VERSION");
+    
+    CString::new(version).unwrap().into_raw()
 }
