@@ -10,11 +10,13 @@ fn git_hash() -> String {
 
 fn capi_generator() {
     use std::env;
-    use cbindgen::{Builder, Language};
+    use cbindgen::{Builder, Language, Config};
 
     let crate_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
+    let config = Config::default();
 
     Builder::new()
+        .with_config(config)
         .with_crate(crate_dir)
         .with_language(Language::C)
         .with_no_includes()
