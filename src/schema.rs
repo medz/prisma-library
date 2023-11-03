@@ -46,7 +46,7 @@ pub extern "C" fn prisma_schema_get_config(params: *const libc::c_char) -> *cons
         Ok(data) => data,
         Err(err) => serde_json::json!({ "error": err }).to_string(),
     };
-    let result = CString::new(result).unwrap();
+    let result: CString = CString::new(result).unwrap();
 
     result.into_raw()
 }

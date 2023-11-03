@@ -19,6 +19,43 @@ class PrismaBindings {
           lookup)
       : _lookup = lookup;
 
+  /// creates a new [PrismaQueryEngine].
+  PrismaQueryEngineConstructorResponse prisma_query_engine_constructor(
+    ffi.Pointer<ffi.Char> environment,
+    ffi.Pointer<ffi.Char> options,
+  ) {
+    return _prisma_query_engine_constructor(
+      environment,
+      options,
+    );
+  }
+
+  late final _prisma_query_engine_constructorPtr = _lookup<
+      ffi.NativeFunction<
+          PrismaQueryEngineConstructorResponse Function(ffi.Pointer<ffi.Char>,
+              ffi.Pointer<ffi.Char>)>>('prisma_query_engine_constructor');
+  late final _prisma_query_engine_constructor =
+      _prisma_query_engine_constructorPtr.asFunction<
+          PrismaQueryEngineConstructorResponse Function(
+              ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
+
+  /// Connects the [PrismaQueryEngine] to the database.
+  ffi.Pointer<PrismaError> prisma_query_engine_connect(
+    ffi.Pointer<PrismaQueryEngine> engine,
+  ) {
+    return _prisma_query_engine_connect(
+      engine,
+    );
+  }
+
+  late final _prisma_query_engine_connectPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<PrismaError> Function(
+              ffi.Pointer<PrismaQueryEngine>)>>('prisma_query_engine_connect');
+  late final _prisma_query_engine_connect =
+      _prisma_query_engine_connectPtr.asFunction<
+          ffi.Pointer<PrismaError> Function(ffi.Pointer<PrismaQueryEngine>)>();
+
   /// Format a schema.
   ///
   /// ## Arguments
@@ -43,6 +80,72 @@ class PrismaBindings {
       ffi.Pointer<ffi.Char> Function(
           ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>)>();
 
+  /// Schame linting.
+  ffi.Pointer<ffi.Char> prisma_schema_lint(
+    ffi.Pointer<ffi.Char> schema,
+  ) {
+    return _prisma_schema_lint(
+      schema,
+    );
+  }
+
+  late final _prisma_schema_lintPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>)>>('prisma_schema_lint');
+  late final _prisma_schema_lint = _prisma_schema_lintPtr
+      .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>();
+
+  /// Returns the schema configuration.
+  ffi.Pointer<ffi.Char> prisma_schema_get_config(
+    ffi.Pointer<ffi.Char> params,
+  ) {
+    return _prisma_schema_get_config(
+      params,
+    );
+  }
+
+  late final _prisma_schema_get_configPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>)>>('prisma_schema_get_config');
+  late final _prisma_schema_get_config = _prisma_schema_get_configPtr
+      .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>();
+
+  /// Returns the schema DMMF.
+  ffi.Pointer<ffi.Char> prisma_schema_get_dmmf(
+    ffi.Pointer<ffi.Char> params,
+  ) {
+    return _prisma_schema_get_dmmf(
+      params,
+    );
+  }
+
+  late final _prisma_schema_get_dmmfPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>)>>('prisma_schema_get_dmmf');
+  late final _prisma_schema_get_dmmf = _prisma_schema_get_dmmfPtr
+      .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>();
+
+  /// Validates a schema.
+  ///
+  /// If the schema is valid, returns a null pointer.
+  ffi.Pointer<ffi.Char> prisma_schema_validate(
+    ffi.Pointer<ffi.Char> schema,
+  ) {
+    return _prisma_schema_validate(
+      schema,
+    );
+  }
+
+  late final _prisma_schema_validatePtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Pointer<ffi.Char> Function(
+              ffi.Pointer<ffi.Char>)>>('prisma_schema_validate');
+  late final _prisma_schema_validate = _prisma_schema_validatePtr
+      .asFunction<ffi.Pointer<ffi.Char> Function(ffi.Pointer<ffi.Char>)>();
+
   /// Returns the version of the Prisma library.
   ffi.Pointer<ffi.Char> prisma_version() {
     return _prisma_version();
@@ -53,4 +156,34 @@ class PrismaBindings {
           'prisma_version');
   late final _prisma_version =
       _prisma_versionPtr.asFunction<ffi.Pointer<ffi.Char> Function()>();
+}
+
+final class PrismaError extends ffi.Opaque {}
+
+final class PrismaQueryEngine extends ffi.Opaque {}
+
+abstract class PrismaQueryEngineConstructorResponse_Tag {
+  static const int Ok = 0;
+  static const int Err = 1;
+}
+
+final class PrismaQueryEngineConstructorResponse extends ffi.Struct {
+  @ffi.Int32()
+  external int tag;
+
+  external UnnamedUnion1 unnamed;
+}
+
+final class UnnamedUnion1 extends ffi.Union {
+  external UnnamedStruct1 unnamed;
+
+  external UnnamedStruct2 unnamed1;
+}
+
+final class UnnamedStruct1 extends ffi.Struct {
+  external ffi.Pointer<PrismaQueryEngine> ok;
+}
+
+final class UnnamedStruct2 extends ffi.Struct {
+  external ffi.Pointer<ffi.Char> err;
 }
