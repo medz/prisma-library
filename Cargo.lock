@@ -139,7 +139,7 @@ dependencies = [
 [[package]]
 name = "builtin-psl-connectors"
 version = "0.1.0"
-source = "git+https://github.com/prisma/prisma-engines#82dc77df83bf91471cbfcd4d418e06dd04567400"
+source = "git+https://github.com/prisma/prisma-engines#0a4f17d75f9571ce96148c80783bf460f07795b2"
 dependencies = [
  "connection-string",
  "either",
@@ -320,7 +320,7 @@ dependencies = [
 [[package]]
 name = "diagnostics"
 version = "0.1.0"
-source = "git+https://github.com/prisma/prisma-engines#82dc77df83bf91471cbfcd4d418e06dd04567400"
+source = "git+https://github.com/prisma/prisma-engines#0a4f17d75f9571ce96148c80783bf460f07795b2"
 dependencies = [
  "colored",
  "indoc",
@@ -340,7 +340,7 @@ dependencies = [
 [[package]]
 name = "dmmf"
 version = "0.1.0"
-source = "git+https://github.com/prisma/prisma-engines#82dc77df83bf91471cbfcd4d418e06dd04567400"
+source = "git+https://github.com/prisma/prisma-engines#0a4f17d75f9571ce96148c80783bf460f07795b2"
 dependencies = [
  "bigdecimal",
  "indexmap 1.9.3",
@@ -766,7 +766,7 @@ checksum = "e2355d85b9a3786f481747ced0e0ff2ba35213a1f9bd406ed906554d7af805a1"
 [[package]]
 name = "parser-database"
 version = "0.1.0"
-source = "git+https://github.com/prisma/prisma-engines#82dc77df83bf91471cbfcd4d418e06dd04567400"
+source = "git+https://github.com/prisma/prisma-engines#0a4f17d75f9571ce96148c80783bf460f07795b2"
 dependencies = [
  "diagnostics",
  "either",
@@ -836,7 +836,7 @@ checksum = "5b40af805b3121feab8a3c29f04d8ad262fa8e0561883e7653e024ae4479e6de"
 [[package]]
 name = "prisma-fmt"
 version = "0.1.0"
-source = "git+https://github.com/prisma/prisma-engines#82dc77df83bf91471cbfcd4d418e06dd04567400"
+source = "git+https://github.com/prisma/prisma-engines#0a4f17d75f9571ce96148c80783bf460f07795b2"
 dependencies = [
  "colored",
  "dmmf",
@@ -864,7 +864,7 @@ dependencies = [
 [[package]]
 name = "prisma-models"
 version = "0.0.0"
-source = "git+https://github.com/prisma/prisma-engines#82dc77df83bf91471cbfcd4d418e06dd04567400"
+source = "git+https://github.com/prisma/prisma-engines#0a4f17d75f9571ce96148c80783bf460f07795b2"
 dependencies = [
  "bigdecimal",
  "chrono",
@@ -881,7 +881,7 @@ dependencies = [
 [[package]]
 name = "prisma-value"
 version = "0.1.0"
-source = "git+https://github.com/prisma/prisma-engines#82dc77df83bf91471cbfcd4d418e06dd04567400"
+source = "git+https://github.com/prisma/prisma-engines#0a4f17d75f9571ce96148c80783bf460f07795b2"
 dependencies = [
  "base64",
  "bigdecimal",
@@ -929,7 +929,7 @@ dependencies = [
 [[package]]
 name = "psl"
 version = "0.1.0"
-source = "git+https://github.com/prisma/prisma-engines#82dc77df83bf91471cbfcd4d418e06dd04567400"
+source = "git+https://github.com/prisma/prisma-engines#0a4f17d75f9571ce96148c80783bf460f07795b2"
 dependencies = [
  "builtin-psl-connectors",
  "psl-core",
@@ -938,7 +938,7 @@ dependencies = [
 [[package]]
 name = "psl-core"
 version = "0.1.0"
-source = "git+https://github.com/prisma/prisma-engines#82dc77df83bf91471cbfcd4d418e06dd04567400"
+source = "git+https://github.com/prisma/prisma-engines#0a4f17d75f9571ce96148c80783bf460f07795b2"
 dependencies = [
  "bigdecimal",
  "chrono",
@@ -1068,7 +1068,7 @@ checksum = "1ad4cc8da4ef723ed60bced201181d83791ad433213d8c24efffda1eec85d741"
 [[package]]
 name = "schema"
 version = "0.1.0"
-source = "git+https://github.com/prisma/prisma-engines#82dc77df83bf91471cbfcd4d418e06dd04567400"
+source = "git+https://github.com/prisma/prisma-engines#0a4f17d75f9571ce96148c80783bf460f07795b2"
 dependencies = [
  "once_cell",
  "prisma-models",
@@ -1079,7 +1079,7 @@ dependencies = [
 [[package]]
 name = "schema-ast"
 version = "0.1.0"
-source = "git+https://github.com/prisma/prisma-engines#82dc77df83bf91471cbfcd4d418e06dd04567400"
+source = "git+https://github.com/prisma/prisma-engines#0a4f17d75f9571ce96148c80783bf460f07795b2"
 dependencies = [
  "diagnostics",
  "pest",
